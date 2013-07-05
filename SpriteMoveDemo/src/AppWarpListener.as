@@ -7,6 +7,7 @@ package
     import com.shephertz.appwarp.messages.Chat;
     import com.shephertz.appwarp.messages.LiveRoom;
     import com.shephertz.appwarp.messages.Lobby;
+    import com.shephertz.appwarp.messages.Move;
     import com.shephertz.appwarp.messages.Room;
     import com.shephertz.appwarp.types.ResultCode;
     
@@ -28,6 +29,15 @@ package
                 WarpClient.getInstance().joinRoom(_owner.roomID);
                 WarpClient.getInstance().subscribeRoom(_owner.roomID);
             }
+            else if(res == ResultCode.api_not_found || res == ResultCode.auth_error){
+                _owner.updateStatus("Verify your api key and secret key");
+            }
+            else if(res == ResultCode.connection_error){
+                _owner.updateStatus("Network Error. Check your internet connectivity and retry.");
+            }
+            else{
+                _owner.updateStatus("Unknown Error");
+            }
         }
         
         public function onDisConnectDone(res:int):void
@@ -44,6 +54,12 @@ package
         
         public function onJoinRoomDone(event:Room):void
         {
+            if(event.result == ResultCode.success){
+                _owner.updateStatus("Started! Use up/down arrows and click to shoot.");
+            }
+            else{
+                _owner.updateStatus("Room join failed. Verify your room id.");
+            }
         }
         
         public function onLeaveRoomDone(event:Room):void
@@ -123,6 +139,11 @@ package
         
         public function onUserChangeRoomProperties(room:Room, user:String, properties:Object, lockTable:Object):void
         {
+        }
+        
+        public function onMoveCompleted(moveEvent:Move):void
+        {
+            
         }
     }
 }

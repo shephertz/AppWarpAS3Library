@@ -8,11 +8,12 @@ import com.shephertz.appwarp.messages.LiveRoom;
 import com.shephertz.appwarp.messages.Lobby;
 import com.shephertz.appwarp.messages.Room;
 import com.shephertz.appwarp.types.ResultCode;
+import com.shephertz.appwarp.messages.Move;
+
 
 import flash.text.TextField;
 import flash.utils.ByteArray;
 
-// Chat UI Elements
 var outputTextField:TextField = new TextField();
 var userinputTextField:TextField = new TextField();
 var connectbtn:TextField = new TextField();
@@ -113,8 +114,18 @@ class roomListener implements RoomRequestListener
     {
     }
     
-    public function onUpdatePropertyDone(event:LiveRoom):void
+    public function onUpdatePropertiesDone(event:LiveRoom):void
     {        
+    }
+    
+    public function onLockPropertiesDone(result:int):void
+    {
+        
+    }
+    
+    public function onUnlockPropertiesDone(result:int):void
+    {
+        
     }
 }
 
@@ -133,6 +144,11 @@ class chatlistner implements ChatRequestListener
             userinputTextField.text = CHAT_PROMPT;
             userinputTextField.textColor = GREY;
         }
+    }
+    
+    public function onSendPrivateChatDone(res:int):void
+    {
+        
     }
 }
 
@@ -166,11 +182,20 @@ class notifylistener implements NotificationListener
     {
         outputTextField.text += "\n"+ event.sender+ ": " +event.chat;
     }
+    public function onPrivateChatReceived(sender:String, message:String):void
+    {
+        
+    }
     public function onUpdatePeersReceived(update:ByteArray):void
     {	
     }
-    public function onUserChangeRoomProperty(room:Room, user:String,properties:Object):void
+    public function onUserChangeRoomProperties(room:Room, user:String,properties:Object, lockTable:Object):void
     {
+    }
+    
+    public function onMoveCompleted(moveEvent:Move):void
+    {
+        
     }
 }
 
@@ -184,7 +209,6 @@ package
     import flash.events.FocusEvent;
     import flash.events.MouseEvent;
     import flash.text.TextField;
-    
     import flash.text.TextFormat;
     import flash.text.TextFormatAlign;
     

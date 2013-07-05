@@ -1,3 +1,8 @@
+var GREY:uint = 0x999999;
+var BLACK:uint = 0x000000;
+var WHITE:uint = 0xFFFFFF;
+var RED:uint = 0xDF0101;
+
 package
 {
     import com.shephertz.appwarp.WarpClient;
@@ -10,6 +15,9 @@ package
     import flash.events.Event;
     import flash.events.KeyboardEvent;
     import flash.events.MouseEvent;
+    import flash.text.TextField;
+    import flash.text.TextFormat;
+    import flash.text.TextFormatAlign;
     import flash.ui.Keyboard;
     
     [SWF(backgroundColor="0xBDBDBD", width="500", height="400",)]
@@ -22,14 +30,14 @@ package
         
         private var isProjectileMoving:Boolean = false;
         private var isRemoteProjectileMoving:Boolean = false;
-        
+        private var connectbtn:TextField = new TextField();
         private var localDestinationY:int;
 
         private var remoteDestinationY:int;
         
-        // AppWarp String Constants
-        public var roomID:String = "1799555827";
+        // AppWarp String Constants        
         public var localUsername:String;
+        public var roomID:String = "1799555827";
         private var apiKey:String = "b29f4030aba3b2bc7002c4eae6815a4130c862c386e43ae2a0a092b27de1c5af"
         private var secretKey:String = "bf45f27e826039754f8dda659166d59ffb7b9dce830ac51d6e6b576ae4b26f7e";
         
@@ -65,6 +73,8 @@ package
             addChild(localProjectile);
             addChild(remoteProjectile);
             
+            addConnectButton();
+            
             stage.addEventListener(KeyboardEvent.KEY_UP, keyPressedDown);
             stage.addEventListener(MouseEvent.CLICK, onMouseClick);
             
@@ -77,7 +87,7 @@ package
             WarpClient.getInstance().setNotificationListener(listener);
             
             localUsername = Math.random().toString();
-            WarpClient.getInstance().connect(localUsername);
+            //WarpClient.getInstance().connect(localUsername);
         }
         
         private function onMouseClick(e:MouseEvent):void
@@ -104,7 +114,7 @@ package
                 localProjectile.x += 10;
             }            
             if(localProjectile.x >= WIDTH){
-                localProjectile.x = 0;
+                localProjectile.x = -5;
                 isProjectileMoving = false;
             }             
         }       
@@ -117,20 +127,17 @@ package
             var key:uint = event.keyCode;
             var step:uint = 15;
             switch (key) {
-                case Keyboard.LEFT :
-                    //localPlayer.x -= step;
-                    break;
-                case Keyboard.RIGHT :
-                    //localPlayer.x += step;
-                    break;
                 case Keyboard.UP :
                     localPlayer.y -= step;
+                    WarpClient.getInstance().sendChat("player,"+localPlayer.x+","+localPlayer.y);
                     break;
                 case Keyboard.DOWN :
                     localPlayer.y += step;
+                    WarpClient.getInstance().sendChat("player,"+localPlayer.x+","+localPlayer.y);
                     break;
-            }
-            WarpClient.getInstance().sendChat("player,"+localPlayer.x+","+localPlayer.y);
+                default:
+                    break;
+            }            
         }
         
         public function moveRemotePlayer(x:int, y:int):void
@@ -153,7 +160,7 @@ package
                 remoteProjectile.x -= 10;
             }
             if(remoteProjectile.x <= 0){
-                remoteProjectile.x = WIDTH;
+                remoteProjectile.x = WIDTH+5;
                 isRemoteProjectileMoving = false;
             }            
         }
@@ -185,5 +192,40 @@ package
             return s;
         }
         
+        private function addConnectButton():void{
+            
+            var headerFormat:TextFormat = new TextFormat();
+            headerFormat.size = 20;
+            headerFormat.bold = true;
+            headerFormat.align = TextFormatAlign.CENTER;
+            
+            connectbtn.defaultTextFormat = headerFormat;
+            connectbtn.y = 5;
+            connectbtn.x = 0;
+            connectbtn.selectable = false;
+            connectbtn.width = 500;
+            connectbtn.height = 25;
+            connectbtn.background = true;
+            connectbtn.backgroundColor = 0x000000;
+            connectbtn.textColor = 0xFFFFFF;
+            connectbtn.text = "Start Game";
+            connectbtn.addEventListener(MouseEvent.CLICK,connect_click);
+            addChild(connectbtn);  
+        }
+        
+        
+        private function connect_click(e:MouseEvent):void
+        {
+            if(WarpClient.getInstance().getConnectionState() == ConnectionState.disconnected)
+            {
+                WarpClient.getInstance().connect(localUsername);
+                connectbtn.text = "Connecting..";
+            }
+        }
+        
+        public function updateStatus(message:String):void
+        {   
+            connectbtn.text = message;
+        }
     }
 }
