@@ -132,7 +132,7 @@ package
             }
         }
         
-        public function onUpdatePeersReceived(update:ByteArray):void
+        public function onUpdatePeersReceived(update:ByteArray, fromUDP:Boolean):void
         {
             
         }

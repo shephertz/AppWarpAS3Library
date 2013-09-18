@@ -6,10 +6,9 @@ import com.shephertz.appwarp.listener.RoomRequestListener;
 import com.shephertz.appwarp.messages.Chat;
 import com.shephertz.appwarp.messages.LiveRoom;
 import com.shephertz.appwarp.messages.Lobby;
+import com.shephertz.appwarp.messages.Move;
 import com.shephertz.appwarp.messages.Room;
 import com.shephertz.appwarp.types.ResultCode;
-import com.shephertz.appwarp.messages.Move;
-
 
 import flash.text.TextField;
 import flash.utils.ByteArray;
@@ -186,7 +185,7 @@ class notifylistener implements NotificationListener
     {
         
     }
-    public function onUpdatePeersReceived(update:ByteArray):void
+    public function onUpdatePeersReceived(update:ByteArray, isUDP:Boolean):void
     {	
     }
     public function onUserChangeRoomProperties(room:Room, user:String,properties:Object, lockTable:Object):void
