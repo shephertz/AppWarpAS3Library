@@ -127,17 +127,7 @@ package
         
         public function onChatReceived(event:Chat):void
         {
-            if(event.sender != _owner.localUsername){
-                var xyArray:Array = event.chat.split(",");
-                var x:int = parseInt( xyArray[1]);
-                var y:int = parseInt( xyArray[2]);
-                if(xyArray[0] == "player"){
-                    _owner.moveRemotePlayer(x, y);
-                }
-                else if(xyArray[0] == "projectile"){
-                    _owner.moveRemoteProjectile(x, y);
-                }
-            }
+
         }
         
         public function onUpdatePeersReceived(update:ByteArray, fromUDP:Boolean):void

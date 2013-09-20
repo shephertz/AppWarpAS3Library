@@ -37,9 +37,9 @@ package
         private var remoteDestinationY:int;
         
         public var udpEnabled:Boolean;
-        
-        // AppWarp String Constants        
         public var localUsername:String;
+        
+        // AppWarp String Constants                
         public var roomID:String = "1799555827";
         private var apiKey:String = "b29f4030aba3b2bc7002c4eae6815a4130c862c386e43ae2a0a092b27de1c5af"
         private var secretKey:String = "bf45f27e826039754f8dda659166d59ffb7b9dce830ac51d6e6b576ae4b26f7e";
