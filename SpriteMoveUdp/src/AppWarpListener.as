@@ -22,6 +22,13 @@ package
             _owner = owner;
         }
         
+        public function onInitUDPDone(res:int):void
+        {
+            if(res == ResultCode.success){
+                _owner.udpEnabled = true;
+                _owner.updateStatus("udp enabled");
+            }
+        }
         
         public function onConnectDone(res:int):void
         {
@@ -29,8 +36,7 @@ package
                 WarpClient.getInstance().joinRoom(_owner.roomID);
                 WarpClient.getInstance().subscribeRoom(_owner.roomID);
                 try{
-                    WarpClient.getInstance().initUDP();
-                    _owner.udpEnabled = true;
+                    WarpClient.getInstance().initUDP();                    
                 }
                 catch(e:Error){
                     // happens when running in flash player (browser)
@@ -63,7 +69,7 @@ package
         public function onJoinRoomDone(event:Room):void
         {
             if(event.result == ResultCode.success){
-                _owner.updateStatus("Started! Use up/down arrows and click to shoot. UdpEnabled "+_owner.udpEnabled);
+                _owner.updateStatus("Started! Use up/down arrows and click to shoot udpEnabled "+ _owner.udpEnabled);
             }
             else{
                 _owner.updateStatus("Room join failed. Verify your room id.");
@@ -111,7 +117,14 @@ package
         public function onUserJoinedRoom(event:Room, user:String):void
         {
         }
-        
+        public function onUserResumed(roomid:String, isLobby:Boolean, username:String):void
+        {
+            
+        }
+        public function onUserPaused(roomid:String, isLobby:Boolean, username:String):void
+        {
+            
+        }
         public function onUserLeftLobby(event:Lobby, user:String):void
         {
         }
@@ -156,6 +169,14 @@ package
         public function onMoveCompleted(moveEvent:Move):void
         {
             
+        }
+        public function onGameStarted(sender:String, roomid:String, nextTurn:String):void
+        {
+
+        }
+        public function onGameStopped(sender:String, roomid:String):void
+        {
+
         }
     }
 }
