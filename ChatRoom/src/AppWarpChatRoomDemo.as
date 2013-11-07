@@ -56,6 +56,10 @@ class connectionListener implements ConnectionRequestListener
         }
     }
     
+    public function onInitUDPDone(res:int):void
+    {
+    }
+    
     public function onDisConnectDone(res:int):void
     {
         outputTextField.text += "\nDisconnected!";
@@ -171,6 +175,14 @@ class notifylistener implements NotificationListener
     {
         outputTextField.text += "\n"+user+" has joined";	
     }
+    public function onUserResumed(roomid:String, isLobby:Boolean, username:String):void
+    {
+        
+    }
+    public function onUserPaused(roomid:String, isLobby:Boolean, username:String):void
+    {
+        
+    }
     public function onUserLeftLobby(event:Lobby, user:String):void
     {
     }
@@ -193,6 +205,14 @@ class notifylistener implements NotificationListener
     }
     
     public function onMoveCompleted(moveEvent:Move):void
+    {
+        
+    }
+    public function onGameStarted(sender:String, roomid:String, nextTurn:String):void
+    {
+        
+    }
+    public function onGameStopped(sender:String, roomid:String):void
     {
         
     }

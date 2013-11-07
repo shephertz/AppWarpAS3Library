@@ -44,6 +44,10 @@ package
         {
         }
         
+        public function onInitUDPDone(res:int):void
+        {
+            
+        }
         public function onSubscribeRoomDone(event:Room):void
         {
         }
@@ -103,7 +107,14 @@ package
         public function onUserJoinedRoom(event:Room, user:String):void
         {
         }
-        
+        public function onUserResumed(roomid:String, isLobby:Boolean, username:String):void
+        {
+            
+        }
+        public function onUserPaused(roomid:String, isLobby:Boolean, username:String):void
+        {
+            
+        }
         public function onUserLeftLobby(event:Lobby, user:String):void
         {
         }
@@ -142,6 +153,14 @@ package
         }
         
         public function onMoveCompleted(moveEvent:Move):void
+        {
+            
+        }
+        public function onGameStarted(sender:String, roomid:String, nextTurn:String):void
+        {
+            
+        }
+        public function onGameStopped(sender:String, roomid:String):void
         {
             
         }
