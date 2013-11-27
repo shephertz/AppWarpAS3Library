@@ -4,16 +4,20 @@ package
     import com.shephertz.appwarp.listener.ConnectionRequestListener;
     import com.shephertz.appwarp.listener.NotificationListener;
     import com.shephertz.appwarp.listener.RoomRequestListener;
+    import com.shephertz.appwarp.listener.ZoneRequestListener;
     import com.shephertz.appwarp.messages.Chat;
+    import com.shephertz.appwarp.messages.LiveResult;
     import com.shephertz.appwarp.messages.LiveRoom;
+    import com.shephertz.appwarp.messages.LiveUser;
     import com.shephertz.appwarp.messages.Lobby;
+    import com.shephertz.appwarp.messages.MatchedRooms;
     import com.shephertz.appwarp.messages.Move;
     import com.shephertz.appwarp.messages.Room;
     import com.shephertz.appwarp.types.ResultCode;
     
     import flash.utils.ByteArray;
     
-    public class AppWarpListener implements ConnectionRequestListener, RoomRequestListener, NotificationListener
+    public class AppWarpListener implements ConnectionRequestListener, RoomRequestListener, NotificationListener, ZoneRequestListener
     {
         private var _owner:SpriteMoveUdp;
         
@@ -175,6 +179,45 @@ package
 
         }
         public function onGameStopped(sender:String, roomid:String):void
+        {
+
+        }
+
+        /**
+        *  Following are ZoneRequestListener interface implementation methods.
+        *  Not used in this sample but this illustrates how to implement them.
+         */
+        
+        public function onCreateRoomDone(event:Room):void
+        {
+
+        }
+        
+        public function onDeleteRoomDone(event:Room):void
+        {
+
+        }
+        
+        public function onGetLiveUserInfoDone(event:LiveUser):void
+        {
+
+
+        }
+        
+        public function onGetAllRoomsDone(event:LiveResult):void
+        {
+
+        }
+        public function onGetOnlineUsersDone(event:LiveResult):void
+        {
+
+        }
+        public function onSetCustomUserInfoDone(event:LiveUser):void
+        {
+
+        }
+        
+        public function onGetMatchedRoomsDone(event:MatchedRooms):void
         {
 
         }
