@@ -1,0 +1,2 @@
+* getSessionID api added
+* recoverConnectionWithSessionID api added
