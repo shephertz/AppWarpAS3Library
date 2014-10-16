@@ -34,7 +34,7 @@ package
             }
         }
         
-        public function onConnectDone(res:int):void
+        public function onConnectDone(res:int, reason:int):void
         {
             if(res == ResultCode.success){
                 WarpClient.getInstance().joinRoom(_owner.roomID);
@@ -47,8 +47,8 @@ package
                     _owner.udpEnabled = false;
                 }
             }
-            else if(res == ResultCode.api_not_found || res == ResultCode.auth_error){
-                _owner.updateStatus("Verify your api key and secret key");
+            else if(res == ResultCode.auth_error){
+                _owner.updateStatus("Auth Error");
             }
             else if(res == ResultCode.connection_error){
                 _owner.updateStatus("Network Error. Check your internet connectivity and retry.");
@@ -182,6 +182,12 @@ package
         {
 
         }
+		public function onPrivateUpdateReceived(sender:String, update:ByteArray, isUDP:Boolean):void
+		{
+		}
+		public function onNextTurnRequest(lastTurn:String):void
+		{
+		}
 
         /**
         *  Following are ZoneRequestListener interface implementation methods.
