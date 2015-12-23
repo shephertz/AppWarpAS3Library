@@ -1,1 +1,0 @@
-* counts of keep alive set to zero when a response of keep alive is received

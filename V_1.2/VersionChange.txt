@@ -1,3 +1,0 @@
-* Added UDP support
-* Fix re-connection bug
-* Add enableTrace api for debugging

@@ -1,3 +1,0 @@
-* Added UDP handshake
-* Adding Connection Resiliency API
-* Adding start/stop turn based APIs
