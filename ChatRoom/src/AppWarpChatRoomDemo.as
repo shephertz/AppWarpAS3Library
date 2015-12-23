@@ -3,9 +3,13 @@ import com.shephertz.appwarp.listener.ChatRequestListener;
 import com.shephertz.appwarp.listener.ConnectionRequestListener;
 import com.shephertz.appwarp.listener.NotificationListener;
 import com.shephertz.appwarp.listener.RoomRequestListener;
+import com.shephertz.appwarp.listener.ZoneRequestListener;
 import com.shephertz.appwarp.messages.Chat;
+import com.shephertz.appwarp.messages.LiveResult;
 import com.shephertz.appwarp.messages.LiveRoom;
+import com.shephertz.appwarp.messages.LiveUser;
 import com.shephertz.appwarp.messages.Lobby;
+import com.shephertz.appwarp.messages.MatchedRooms;
 import com.shephertz.appwarp.messages.Move;
 import com.shephertz.appwarp.messages.Room;
 import com.shephertz.appwarp.types.ResultCode;
@@ -16,13 +20,15 @@ import flash.utils.ByteArray;
 var outputTextField:TextField = new TextField();
 var userinputTextField:TextField = new TextField();
 var connectbtn:TextField = new TextField();
+var getAllRoomsBtn:TextField = new TextField();
 var disconnectbtn:TextField = new TextField();
 var chatBtn:TextField = new TextField();
+var getAllRoomsInRangeBtn:TextField = new TextField();
 
 // AppWarp String Constants
-var roomID:String = "1799555827";
-var apiKey:String = "b29f4030aba3b2bc7002c4eae6815a4130c862c386e43ae2a0a092b27de1c5af"
-var secretKey:String = "bf45f27e826039754f8dda659166d59ffb7b9dce830ac51d6e6b576ae4b26f7e";
+var roomID:String = "RoomId";
+var apiKey:String = "APIKEY"
+var secretKey:String = "SECRETKEY";
 
 // Watermark Text
 var NAME_PROMPT:String = "Enter name and click connect..";
@@ -42,33 +48,72 @@ Handle connection events. If successfully connected, send join room request.
 */
 class connectionListener implements ConnectionRequestListener
 {
-    public function onConnectDone(res:int):void
-    {
-        if(res == ResultCode.success)
-        {
-            appwarp.joinRoom(roomID);
-        }
-        else{
-            outputTextField.text += "\nConnection Failed!";
-            connectbtn.backgroundColor = BLACK;
-            chatBtn.backgroundColor = GREY;
-            disconnectbtn.backgroundColor = GREY;
-        }
-    }
-    
-    public function onInitUDPDone(res:int):void
-    {
-    }
-    
-    public function onDisConnectDone(res:int):void
-    {
-        outputTextField.text += "\nDisconnected!";
-        userinputTextField.text = NAME_PROMPT;
-        userinputTextField.textColor = GREY;
-        connectbtn.backgroundColor = BLACK;
-        chatBtn.backgroundColor = GREY;
-        disconnectbtn.backgroundColor = GREY;
-    }
+	public function onConnectDone(res:int,reasonCode:int):void
+	{
+		if(res == ResultCode.success)
+		{
+			appwarp.joinRoom(roomID);
+		}
+		else{
+			outputTextField.text += "\nConnection Failed!";
+			connectbtn.backgroundColor = BLACK;
+			chatBtn.backgroundColor = GREY;
+			disconnectbtn.backgroundColor = GREY;
+			getAllRoomsBtn.backgroundColor = GREY;
+			getAllRoomsInRangeBtn.backgroundColor = GREY;
+		}
+	}
+	
+	public function onInitUDPDone(res:int):void
+	{
+	}
+	
+	public function onDisConnectDone(res:int):void
+	{
+		outputTextField.text += "\nDisconnected!";
+		userinputTextField.text = NAME_PROMPT;
+		userinputTextField.textColor = GREY;
+		connectbtn.backgroundColor = BLACK;
+		chatBtn.backgroundColor = GREY;
+		disconnectbtn.backgroundColor = GREY;
+		getAllRoomsBtn.backgroundColor = GREY;
+		getAllRoomsInRangeBtn.backgroundColor = GREY;
+	}
+}
+
+class zoneListener implements ZoneRequestListener 
+{
+	public function onCreateRoomDone(event:Room):void{}
+	public function onDeleteRoomDone(event:Room):void{}
+	public function onGetAllRoomsDone(event:LiveResult):void{
+		if(event.result == ResultCode.success)
+		{
+			outputTextField.text += "\nGet All Rooms Done!";
+			outputTextField.text += "\nList of Room id is: " + event.list;
+		}
+		else{
+			outputTextField.text += "\nGet All Rooms Failed!";
+			getAllRoomsBtn.backgroundColor = GREY;
+		}
+	}
+	public function onGetOnlineUsersDone(event:LiveResult):void{}
+	public function onGetLiveUserInfoDone(event:LiveUser):void{}
+	public function onSetCustomUserInfoDone(event:LiveUser):void{}
+	public function onGetMatchedRoomsDone(event:MatchedRooms):void{
+		if(event.result == ResultCode.success)
+		{
+			outputTextField.text += "\nGet Rooms in range Done!";
+			var rooms:Array = event.rooms;
+			for(var i:int = 0;i<rooms.length;i++){
+				var room:Room = Room(rooms[i])
+				outputTextField.text += "\nRoom name is: :" + room.name;
+			}
+		}
+		else{
+			outputTextField.text += "\nGet Rooms in range Failed!";
+			getAllRoomsInRangeBtn.backgroundColor = GREY;
+		}
+	}
 }
 
 /*
@@ -84,8 +129,10 @@ class roomListener implements RoomRequestListener
             outputTextField.text += "\nReady To Chat!";
             userinputTextField.text = CHAT_PROMPT;
             userinputTextField.textColor = GREY;    
-            chatBtn.backgroundColor = BLACK;
-            disconnectbtn.backgroundColor = BLACK;
+			chatBtn.backgroundColor = BLACK;
+			disconnectbtn.backgroundColor = BLACK;   
+			getAllRoomsBtn.backgroundColor = BLACK;
+			getAllRoomsInRangeBtn.backgroundColor = BLACK;
         }
         else{
             outputTextField.text += "\nSubscribe Room Failed!";
@@ -161,9 +208,14 @@ users joining/leaving and chat message events.
 */
 class notifylistener implements NotificationListener
 {
-    public function onRoomCreated(event:Room):void
-    {
-    }
+	public function onPrivateUpdateReceived(sender:String, update:ByteArray, isUDP:Boolean):void
+	{
+	}public function onNextTurnRequest(lastTurn:String):void
+	{
+	}
+	public function onRoomCreated(event:Room):void
+	{
+	}
     public function onRoomDestroyed(event:Room):void
     {
     }
@@ -221,7 +273,6 @@ class notifylistener implements NotificationListener
 package
 {
     import com.shephertz.appwarp.WarpClient;
-    import com.shephertz.appwarp.listener.ConnectionRequestListener;
     import com.shephertz.appwarp.types.ConnectionState;
     
     import flash.display.Sprite;
@@ -244,7 +295,8 @@ package
             appwarp.setConnectionRequestListener(new connectionListener());
             appwarp.setRoomRequestListener(new roomListener());
             appwarp.setChatRequestListener(new chatlistner());
-            appwarp.setNotificationListener(new notifylistener());
+			appwarp.setNotificationListener(new notifylistener());
+			appwarp.setZoneRequestListener(new zoneListener());
         }
         
         
@@ -254,8 +306,7 @@ package
                 if(userinputTextField.text != CHAT_PROMPT){
                     // Send the chat message
                     appwarp.sendChat(userinputTextField.text);
-                    
-                    chatBtn.backgroundColor = GREY;
+					chatBtn.backgroundColor = GREY;
                 }
             }
         }
@@ -266,20 +317,33 @@ package
                 if(userinputTextField.text != NAME_PROMPT){
                     // Connect to AppWarp
                     appwarp.connect(userinputTextField.text); 
-                    
-                    outputTextField.text += "\nConnecting...";
+                   	outputTextField.text += "\nConnecting...";
                     connectbtn.backgroundColor = GREY;                                       
                 }
             }
         }
         
-        private function disconnect_click(e:MouseEvent):void
-        {
-            if(appwarp.getConnectionState() == ConnectionState.connected){
-                // Disconnect from AppWarp
-                appwarp.disconnect();
-            }
-        }
+		private function disconnect_click(e:MouseEvent):void
+		{
+			if(appwarp.getConnectionState() == ConnectionState.connected){
+				// Disconnect from AppWarp
+				appwarp.disconnect();
+			}
+		}
+		private function getAllRooms_click(e:MouseEvent):void
+		{
+			if(appwarp.getConnectionState() == ConnectionState.connected){
+				// Get All Rooms from AppWarp
+				appwarp.getAllRooms();
+			}
+		}
+		private function getAllRoomsInRange_click(e:MouseEvent):void
+		{
+			if(appwarp.getConnectionState() == ConnectionState.connected){
+				// Get All Rooms In Range from AppWarp
+				appwarp.getRoomsInRange(0,5);
+			}
+		}
         
         private function PrepareChatUI():void
         {
@@ -363,6 +427,33 @@ package
             chatBtn.text = "Send Chat";
             chatBtn.addEventListener(MouseEvent.CLICK,sendchat_click);
             addChild(chatBtn);
+			
+			
+			getAllRoomsBtn.y = userinputTextField.height + userinputTextField.y + 40;
+			getAllRoomsBtn.x = 220;
+			getAllRoomsBtn.selectable = false;
+			getAllRoomsBtn.width = 80;
+			getAllRoomsBtn.height = 25;
+			getAllRoomsBtn.background = true;
+			getAllRoomsBtn.backgroundColor = GREY;
+			getAllRoomsBtn.textColor = WHITE;
+			getAllRoomsBtn.text = "Get All Rooms";
+			getAllRoomsBtn.addEventListener(MouseEvent.CLICK,getAllRooms_click);
+			addChild(getAllRoomsBtn); 
+			
+			getAllRoomsInRangeBtn.y = userinputTextField.height + userinputTextField.y + 40;
+			getAllRoomsInRangeBtn.x = 320;
+			getAllRoomsInRangeBtn.selectable = false;
+			getAllRoomsInRangeBtn.width = 110;
+			getAllRoomsInRangeBtn.height = 25;
+			getAllRoomsInRangeBtn.background = true;
+			getAllRoomsInRangeBtn.backgroundColor = GREY;
+			getAllRoomsInRangeBtn.textColor = WHITE;
+			getAllRoomsInRangeBtn.text = "Get Rooms In Range";
+			getAllRoomsInRangeBtn.addEventListener(MouseEvent.CLICK,getAllRoomsInRange_click);
+			addChild(getAllRoomsInRangeBtn);
+			
+			
         }
         
         // Watermark text handling
